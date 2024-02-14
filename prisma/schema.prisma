@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  email String @unique
+  password String
+  forks Fork[]
+}
+model Fork{
+    // Extension's internal fields
+    id       String @id @default(auto()) @map("_id") @db.ObjectId
+    path     String @unique
+    depth    Int
+    numchild Int    @default(0)
+	// Your fields go here...
+    user  User @relation(fields: [userId], references: [id])
+    userId String @db.ObjectId
+    task     String
+    type String
+
+    
+
+    
+}
+// model Fork {
+//   id     Int  @id @default(autoincrement())
+//   task String
+//   parentId String?
+//   children Fork[] @relation(fields: [parentId], references: [id])
+//   user   User @relation(fields: [userId], references: [id])
+//   userId Int  @unique // relation scalar field (used in the `@relation` attribute above)
+// }
