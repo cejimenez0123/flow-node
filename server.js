@@ -6,7 +6,6 @@ const passport = require("passport")
 const cors = require('cors')
 const authRoutes = require('./routes/auth.js')
 const forkRoutes = require('./routes/fork.js')
-const serverless = require("serverless-http")
 const {setUpPassportLocal}= require("./middleware/authMiddleware.js")
 
 dotenv.config()
@@ -42,4 +41,3 @@ app.use(passport.initialize());
 app.listen(PORT, () => {
 console.log(`Server is running on http://localhost:${PORT}`)
 })
-export const handler = serverless(api);
