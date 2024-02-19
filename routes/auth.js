@@ -6,6 +6,21 @@ const prisma = require("../db")
 // module.exports = function (passport){
 const router = express.Router()
 
+module.exports = function(authMiddleware){
+router.get("/",async (req, res)=>{
+  const token = extractToken(req)
+  jwt.verify(token, authMiddleware, function(err, decoded) {
+    if (err) {
+     res.status(401).json({   name: 'TokenExpiredError',
+     message: 'jwt expired'})
+    }else{
+      res.status(200).json({   name: 'TokenSuccess',
+     message: 'Token Acitive'})
+    }
+  })
+
+
+})
 router.post('/register', async (req, res) => {
     const { email, password } = req.body;
   
@@ -58,36 +73,18 @@ router.post('/login', async (req, res) => {
       res.status(500).json({ message: 'Error logging in' });
     }
   });
-// router.post("/login",(req, res) => { passport.authenticate("local", passport.authenticate("local",(err, user, options) => {
-//     if (user) {
-        // req.login(user, (error)=>{
-        //     if (error) {
-        //         res.send(error);
-        //     } else {
-        //         let token = generateToken(user.id)
-        //         console.log("Successfully authenticated");
-        //         res.json({user:user,token:token});
-        //     };
-        // });
-//     } else {
-//         console.error(err); 
-//         res.status(500).json({ error: "Internal Server Error" });
-//     }
-// })(req, res))})
 
-// router.post("/logout", async function (req, res, next) {
-//         req.logout(function (err) {
-//         if (err) {
-//             console.error(err); 
-//         return next(err);
-//         }
-//         console.log("Successfully logged out")
-//         res.redirect("/login");
-//         });
-//     })
-//         return router
-// }
 router.post("/logout", async function (req, res, next) {
 
 })
-module.exports = router
+
+function extractToken (req) {
+    if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+        return req.headers.authorization.split(' ')[1];
+    } else if (req.query && req.query.token) {
+        return req.query.token;
+    }
+    return null;
+}
+return router
+}

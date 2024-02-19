@@ -22,7 +22,7 @@ const authMiddleware = passport.authenticate('bearer', { session: false }); // S
 
 app.use(bodyParser.json());
 app.use(logger);
-app.use("/auth", authRoutes);
+app.use("/auth", authRoutes(authMiddleware));
 app.use("/fork",forkRoutes(authMiddleware))
 setUpPassportLocal(passport);
 app.use(
