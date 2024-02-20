@@ -9,7 +9,7 @@ const router = express.Router()
 module.exports = function(authMiddleware){
 
     router.post("/",authMiddleware, async (req,res)=>{
-            const {fork,task}=req.body
+            const {parentFork,task}=req.body
             const user = req.user
             const newFork = await prisma.fork.create({
                 data: {
@@ -23,7 +23,7 @@ module.exports = function(authMiddleware){
                     },
                     parent:{
                         connect:{
-                            id: fork.id
+                            id: parentFork.id
                         }
                     }
                 }})

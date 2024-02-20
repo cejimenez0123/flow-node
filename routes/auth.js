@@ -8,8 +8,10 @@ const router = express.Router()
 
 module.exports = function(authMiddleware){
 router.get("/",async (req, res)=>{
-  const token = extractToken(req)
-  jwt.verify(token, authMiddleware, function(err, decoded) {
+ 
+  console.log(req.headers);
+  const token = req.headers.authorization.split(" ")[1]
+  jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
     if (err) {
      res.status(401).json({   name: 'TokenExpiredError',
      message: 'jwt expired'})
