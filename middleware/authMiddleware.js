@@ -18,12 +18,12 @@ passport.use(new BearerStrategy(async (token, done) => {
     }
 
     // Optionally verify password (if hashed)
-    if (user.password && passwordHashingUsed) {
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        return done(null, false); // Invalid credentials
-      }
-    }
+    // if (user.password && passwordHashingUsed) {
+    //   const isMatch = await bcrypt.compare(password, user.password);
+    //   if (!isMatch) {
+    //     return done(null, false); // Invalid credentials
+    //   }
+    // }
 
     // Pass authenticated user object to next middleware
     done(null, user);
