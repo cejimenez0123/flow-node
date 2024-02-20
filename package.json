@@ -1,8 +1,9 @@
 {
   "name": "flow-node",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Mindful Productivity App Api",
+  "main": "server.js",
+  "repository": "https://github.com/cejimenez0123/flow-node",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
