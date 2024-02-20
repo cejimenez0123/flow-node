@@ -8,8 +8,6 @@ const router = express.Router()
 
 module.exports = function(authMiddleware){
 router.get("/",async (req, res)=>{
- 
-  console.log(req.headers);
   const token = req.headers.authorization.split(" ")[1]
   jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
     if (err) {
