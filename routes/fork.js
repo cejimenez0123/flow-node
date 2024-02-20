@@ -8,12 +8,14 @@ const router = express.Router()
 
 module.exports = function(authMiddleware){
 
-    router.post("/",authMiddleware,async (req,res)=>{
+    router.post("/",authMiddleware, async (req,res)=>{
             const {fork,task}=req.body
             const user = req.user
             const newFork = await prisma.fork.create({
                 data: {
                     name: task,
+                    dueDate:null,
+                    completed:false,
                     user:{
                         connect:{
                             id: user.id
@@ -25,8 +27,7 @@ module.exports = function(authMiddleware){
                         }
                     }
                 }})
-
-         res.json(newFork)
+                res.json(newFork)
         })
         router.delete("/children/:id",authMiddleware,async (req,res)=>{
             await prisma.fork.delete({
@@ -61,8 +62,7 @@ module.exports = function(authMiddleware){
             const {id} = req.params
             const forks = await prisma.fork.findMany({where:{
                 AND:{
-                    parentId: id,
-                    
+                    parentId: id,                 
                     userId:"65d3a68043f11b3ea66838f7"
                 }
             }})
