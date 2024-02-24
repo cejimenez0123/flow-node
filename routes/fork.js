@@ -3,19 +3,23 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const prisma = require("../db");
 const auth = require('./auth');
-
+const ADMIN_UID="65d3a68043f11b3ea66838f7"
 const router = express.Router()
 
 module.exports = function(authMiddleware){
 
     router.post("/",authMiddleware, async (req,res)=>{
-            const {parentFork,task}=req.body
+            const {parentFork,task,dueDate}=req.body
+            let completed = null
+            if(dueDate!==null){
+                completed=false
+            }
             const user = req.user
             const newFork = await prisma.fork.create({
                 data: {
                     name: task,
-                    dueDate:null,
-                    completed:false,
+                    dueDate:dueDate,
+                    completed:completed,
                     user:{
                         connect:{
                             id: user.id
@@ -63,7 +67,7 @@ module.exports = function(authMiddleware){
             const forks = await prisma.fork.findMany({where:{
                 AND:{
                     parentId: id,                 
-                    userId:"65d3a68043f11b3ea66838f7"
+                    userId:ADMIN_UID
                 }
             }})
             res.json(forks)
@@ -71,13 +75,31 @@ module.exports = function(authMiddleware){
         router.get("/protected/children/:id",authMiddleware,async (req, res) => {
 
             const {id} = req.params
-            const forks = await prisma.fork.findMany({
-                where: {
-                    AND:{
-                        parentId: id,
-                        userId: req.user.id
-                    }
-                }})
+            // const forks = await prisma.fork.findMany({
+            //     where: {
+            //         AND:{
+            //             parentId: id,
+            //             userId: req.user.id
+            //         }
+            //     }})
+                const forks = await prisma.fork.findMany({
+                    where: {
+                      OR: [
+                        { AND:{
+                          parentId:id, 
+                          userId: req.user.id
+                        }
+                        },
+                        {
+                          AND: {
+                            parentId:id,
+                            userId: ADMIN_UID
+                          },
+                        },
+                      ],
+                    },
+                  })
+                  console.log(forks)
             res.json(forks)
 
         })
