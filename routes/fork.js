@@ -1,13 +1,10 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const prisma = require("../db");
-const auth = require('./auth');
-const ADMIN_UID="65d3a68043f11b3ea66838f7"
+
 const router = express.Router()
 
 module.exports = function(authMiddleware){
-
+    const ADMIN_UID="65d3a68043f11b3ea66838f7"
     router.post("/",authMiddleware, async (req,res)=>{
             const {parentFork,task,dueDate}=req.body
             let completed = null
@@ -36,22 +33,30 @@ module.exports = function(authMiddleware){
         router.delete("/children/:id",authMiddleware,async (req,res)=>{
             await prisma.fork.delete({
                 where: {
-                id: req.params.id
+                    id: req.params.id
                 },
               })
-            res.status(200).json({message:"Deleted Successfully"})
+            res.status(201).json({message:"Deleted Successfully"})
         })
-        router.put("/children/:id" ,authMiddleware,async (req,res)=>{
+        router.put("/:id" ,authMiddleware,async (req,res)=>{
             const id = req.params.id
-            const { completed, dueDate, task}= req.body
+            const { completed,
+                    dueDate,
+                    name,
+                    description }= req.body
             const updateFork = await prisma.fork.update({
                 where: {
-                    id: id
-                },
+              
+                        id: id,
+                       
+                      
+                      
+                    },
                 data: {
-                    name: task,
+                    name: name,
                     completed: completed,
                     dueDate: dueDate, 
+                    description: description??""
                 },
               })
 
@@ -70,18 +75,64 @@ module.exports = function(authMiddleware){
                     userId:ADMIN_UID
                 }
             }})
+
+         
             res.json(forks)
         })
+        async function findValues(id,next){
+            const map = await prisma.fork.findUnique({
+                where:{
+                    id: id
+                },select:{
+                    forks: true
+                }
+            })
+            const fork = await prisma.fork.findUnique({where:{id:id}})
+            let forks =map.forks
+            if(forks.length>0){
+                forks.forEach(fork=>findValues(fork.id,(xid)=>{
+                     prisma.fork.delete({where:{
+                        id: xid
+                       }}).then(()=>{
+                        next(id)   
+                       }) 
+                       
+                }))
+            }else{
+                next(fork.id)
+            }
+        }
+        router.delete("/:id",authMiddleware,async (req,res)=>{
+            const parentId = req.params.id
+            const idList = req.body.idList
+          
+           await findValues(parentId,(id)=>{
+           prisma.fork.delete({where:{
+                id: id
+               }}).then(response=>{
+                res.status(204).json({message:"Delete Successfully"})
+               }).catch(error=>{
+                res.status(402).json({message:"Delete Error"})
+               })
+           })
+        
+           
+        })
+        router.get("/children/:id/user",authMiddleware, async (req, res) => {
+            const {id} = req.params
+            const forks = await prisma.fork.findMany({where:{
+                AND:{
+                    parentId: id,                 
+                    userId:req.user.id
+                }
+            }})
+            res.json(forks)
+        })
+      
         router.get("/protected/children/:id",authMiddleware,async (req, res) => {
 
             const {id} = req.params
-            // const forks = await prisma.fork.findMany({
-            //     where: {
-            //         AND:{
-            //             parentId: id,
-            //             userId: req.user.id
-            //         }
-            //     }})
+    
                 const forks = await prisma.fork.findMany({
                     where: {
                       OR: [
@@ -99,9 +150,9 @@ module.exports = function(authMiddleware){
                       ],
                     },
                   })
-                  console.log(forks)
             res.json(forks)
 
         })
+    
     return router
 }
