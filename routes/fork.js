@@ -6,17 +6,19 @@ const router = express.Router()
 module.exports = function(authMiddleware){
     const ADMIN_UID="65d3a68043f11b3ea66838f7"
     router.post("/",authMiddleware, async (req,res)=>{
-            const {parentFork,task,dueDate}=req.body
-            let completed = null
+            const {parentFork,task,completed,dueDate}=req.body
+            let truthy = null
             if(dueDate!==null){
-                completed=false
+                truthy=false
+            }else{
+                truthy= completed
             }
             const user = req.user
             const newFork = await prisma.fork.create({
                 data: {
                     name: task,
                     dueDate:dueDate,
-                    completed:completed,
+                    completed:truthy,
                     user:{
                         connect:{
                             id: user.id
@@ -43,19 +45,18 @@ module.exports = function(authMiddleware){
             const { completed,
                     dueDate,
                     name,
+                    style,
                     description }= req.body
             const updateFork = await prisma.fork.update({
                 where: {
               
-                        id: id,
-                       
-                      
-                      
+                        id: id, 
                     },
                 data: {
                     name: name,
                     completed: completed,
-                    dueDate: dueDate, 
+                    dueDate: dueDate,
+                    style:style, 
                     description: description??""
                 },
               })

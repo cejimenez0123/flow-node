@@ -6,6 +6,7 @@ const passport = require("passport")
 const cors = require('cors')
 const authRoutes = require('./routes/auth.js')
 const forkRoutes = require('./routes/fork.js')
+const userRoutes = require('./routes/user.js')
 const {setUpPassportLocal}= require("./middleware/authMiddleware.js")
 
 dotenv.config()
@@ -26,6 +27,7 @@ app.get('/', (req, res, next) => {
 
     res.status(200).json({message:"Hello World"})
 })
+app.use("/user", userRoutes(authMiddleware))
 app.use("/auth", authRoutes(authMiddleware));
 app.use("/fork",forkRoutes(authMiddleware))
 setUpPassportLocal(passport);

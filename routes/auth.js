@@ -14,12 +14,16 @@ router.get("/",async (req, res)=>{
      res.status(401).json({   name: 'TokenExpiredError',
      message: 'jwt expired'})
     }else{
+
       res.status(200).json({   name: 'TokenSuccess',
      message: 'Token Acitive'})
     }
   })
 
 
+})
+router.get("/user",authMiddleware,async (req, res) => {
+  res.json({user:req.user})
 })
 router.post('/register', async (req, res) => {
     const { email, password } = req.body;
@@ -45,7 +49,7 @@ router.post('/register', async (req, res) => {
   
       // Optionally generate a JWT token (avoid storing full credentials in token)
       // and send it as a response (not in body for security)
-      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '23h' });
   
       res.status(201).json({ message: 'User registered successfully', token }); // Securely send token in header
     } catch (error) {
@@ -66,7 +70,7 @@ router.post('/login', async (req, res) => {
       }
   
       // Generate JWT token with user ID
-      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '3h' }); // Adjust expiration as needed
+      const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '23h' }); // Adjust expiration as needed
   
       res.json({ token });
     } catch (error) {
