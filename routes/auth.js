@@ -14,13 +14,11 @@ router.get("/",async (req, res)=>{
      res.status(401).json({   name: 'TokenExpiredError',
      message: 'jwt expired'})
     }else{
-
-      res.status(200).json({   name: 'TokenSuccess',
-     message: 'Token Acitive'})
+      res.status(200).json({   
+        name: 'TokenSuccess',
+        message: 'Token Acitive'})
     }
   })
-
-
 })
 router.get("/user",authMiddleware,async (req, res) => {
   res.json({user:req.user})
@@ -81,7 +79,6 @@ router.post('/login', async (req, res) => {
 router.post("/logout", async function (req, res, next) {
 
 })
-
 function extractToken (req) {
     if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
         return req.headers.authorization.split(' ')[1];
