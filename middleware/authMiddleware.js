@@ -17,8 +17,6 @@ passport.use(new BearerStrategy(async (token, done) => {
       return done(null, false); // Invalid token or user not found
     }
 
-  
-
     // Pass authenticated user object to next middleware
     done(null, user);
   } catch (error) {
