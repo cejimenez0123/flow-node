@@ -106,7 +106,6 @@ module.exports = function(authMiddleware){
         router.delete("/:id",authMiddleware,async (req,res)=>{
             const parentId = req.params.id
             const idList = req.body.idList
-          
            await findValues(parentId,(id)=>{
            prisma.fork.delete({where:{
                 id: id
