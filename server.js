@@ -1,6 +1,5 @@
 const express = require("express");
-const dotenv = require("dotenv").config();
-const session = require("express-session")
+let session = require('cookie-session');
 const bodyParser = require("body-parser")
 const passport = require("passport")
 const cors = require('cors')
@@ -30,7 +29,6 @@ app.use("/user", userRoutes(authMiddleware))
 app.use("/auth", authRoutes(authMiddleware));
 app.use("/fork",forkRoutes(authMiddleware))
 setUpPassportLocal(passport);
-console.log(process.env.JWT_SECRET)
 app.use(
     session({
     secret: process.env.JWT_SECRET??"SDFSDGds",resave: false,
