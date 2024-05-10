@@ -42,4 +42,5 @@ app.use(passport.initialize());
 app.listen(PORT, () => {
 console.log(`Server is running on http://localhost:${PORT}`)
 })
+app.setTimeout(500000)
 module.exports = app
