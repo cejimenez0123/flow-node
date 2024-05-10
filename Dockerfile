@@ -7,7 +7,7 @@ FROM node:21
 
 # Copy the application files into the working directory
 COPY . /
-
+EXPOSE 8080
 # Install the application dependencies
 RUN npm install
 
