@@ -30,6 +30,7 @@ app.use("/user", userRoutes(authMiddleware))
 app.use("/auth", authRoutes(authMiddleware));
 app.use("/fork",forkRoutes(authMiddleware))
 setUpPassportLocal(passport);
+console.log(process.env.JWT_SECRET)
 app.use(
     session({
     secret: process.env.JWT_SECRET,resave: false,
