@@ -5,7 +5,7 @@ node_modules
 # Local Netlify folder
 .netlify
 app.yaml
-/node_modules
+
 
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
