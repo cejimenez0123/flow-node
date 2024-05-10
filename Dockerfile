@@ -9,7 +9,7 @@ FROM node:21
 COPY . /
 
 # Install the application dependencies
-RUN npm install && node server.js
+RUN npm start
 
 # Define the entry point for the container
 CMD ["npm", "start"]

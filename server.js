@@ -1,5 +1,5 @@
 const express = require("express");
-const dotenv = require("dotenv");
+const dotenv = require("dotenv").config();
 const session = require("express-session")
 const bodyParser = require("body-parser")
 const passport = require("passport")
@@ -9,7 +9,6 @@ const forkRoutes = require('./routes/fork.js')
 const userRoutes = require('./routes/user.js')
 const {setUpPassportLocal}= require("./middleware/authMiddleware.js")
 
-dotenv.config()
 const app = express();
 const PORT = process.env.PORT || 8080;
 app.use(cors())
@@ -33,7 +32,7 @@ app.use("/fork",forkRoutes(authMiddleware))
 setUpPassportLocal(passport);
 app.use(
     session({
-    secret: process.env.JWT_SECRET,resave: false,
+    secret: process.env.SESSION_SECRET,resave: false,
     saveUninitialized: true,
     cookie: { secure: false }, // Adjust this based on you
     }))
