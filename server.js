@@ -33,7 +33,7 @@ setUpPassportLocal(passport);
 console.log(process.env.JWT_SECRET)
 app.use(
     session({
-    secret: process.env.JWT_SECRET,resave: false,
+    secret: process.env.JWT_SECRET??"SDFSDGds",resave: false,
     saveUninitialized: true,
     cookie: { secure: false },
     }))
