@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "paths": {
+    "/": {
+      "name": "/",
+      "lambdaFunction": "flownode153a69f0",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/fork": {
+      "name": "/fork",
+      "lambdaFunction": "flownode199b6fc1",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

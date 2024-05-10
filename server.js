@@ -10,7 +10,7 @@ const userRoutes = require('./routes/user.js')
 const {setUpPassportLocal}= require("./middleware/authMiddleware.js")
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 3000;
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
 const logger = (req, _res, next) => {
@@ -39,7 +39,7 @@ app.use(
     }))
 app.use(passport.session());
 app.use(passport.initialize());
-app.listen(PORT, () => {
-console.log(`Server is running on http://localhost:${PORT}`)
+app.listen(PORT, '0.0.0.0', () => {
+console.log(`Server is running on ${PORT}`)
 })
 module.exports = app
