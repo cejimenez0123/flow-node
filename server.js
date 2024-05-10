@@ -32,9 +32,9 @@ app.use("/fork",forkRoutes(authMiddleware))
 setUpPassportLocal(passport);
 app.use(
     session({
-    secret: process.env.SESSION_SECRET,resave: false,
+    secret: process.env.JWT_SECRET,resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }, // Adjust this based on you
+    cookie: { secure: false },
     }))
 app.use(passport.session());
 app.use(passport.initialize());
