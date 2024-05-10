@@ -9,7 +9,7 @@ FROM node:21
 COPY . /
 EXPOSE 8080
 # Install the application dependencies
-RUN npm install
+RUN npm install && node server.js
 
 # Define the entry point for the container
 CMD ["npm", "start"]
