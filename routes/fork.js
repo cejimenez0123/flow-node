@@ -73,9 +73,8 @@ module.exports = function(authMiddleware){
             const forks = await prisma.fork.findMany({where:{
                 AND:{
                     parentId: id,                 
-                    userId:null
                 }
-            }})
+        }})
 
          
             res.json(forks)
