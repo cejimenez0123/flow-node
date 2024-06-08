@@ -1,12 +1,11 @@
 const express = require('express');
 const prisma = require("../db");
-
+const bucket = require("../gstorage")
 const router = express.Router()
 
 module.exports = function(authMiddleware){
-    const ADMIN_UID="65d3a68043f11b3ea66838f7"
     router.post("/",authMiddleware, async (req,res)=>{
-            const {parentFork,task,completed,dueDate}=req.body
+            const {parentFork,task,completed,dueDate,link}=req.body
             let truthy = null
             if(dueDate!==null){
                 truthy=false
@@ -19,11 +18,36 @@ module.exports = function(authMiddleware){
                     name: task,
                     dueDate:dueDate,
                     completed:truthy,
+                    link:link,
                     user:{
                         connect:{
                             id: user.id
                         }
                     },
+                    parent:{
+                        connect:{
+                            id: parentFork.id
+                        }
+                    }
+                }})
+                res.json(newFork)
+        })
+        router.post("/admin",authMiddleware, async (req,res)=>{
+            const {parentFork,task,completed,dueDate,link}=req.body
+            let truthy = null
+            if(dueDate!==null){
+                truthy=false
+            }else{
+                truthy= completed
+            }
+            
+            const newFork = await prisma.fork.create({
+                data: {
+                    name: task,
+                    dueDate:dueDate,
+                    completed:truthy,
+                    link:link,
+                    userId:null,
                     parent:{
                         connect:{
                             id: parentFork.id
@@ -71,14 +95,55 @@ module.exports = function(authMiddleware){
         router.get("/children/:id", async (req,res)=>{
             const {id} = req.params
             const forks = await prisma.fork.findMany({where:{
-                AND:{
-                    parentId: id, 
-                    userId:null                
+                OR:[{
+                    AND:{
+                        parentId: id, 
+                            userId:null   
+                    }
+
                 }
+
+                ]
+                // AND:{
+                //                 
+                // }
         }})
 
          
             res.json(forks)
+        })
+        router.post("/file",authMiddleware,async (req,res)=>{
+            const {name,file}=req.body
+        
+            const fileName = `${req.user.id}/${file.name}`
+            let bucketFile = bucket.file(fileName)
+            bucketFile.createWriteStream({
+                metadata: {
+                    contentType: 'text/plain', // Adjust content type as needed
+                },
+            })
+            console.log(fileName)
+            const downloadFilename = `${name}.${file.type}`
+            bucketFile.download({ destination: downloadFilename })
+   
+            res.json({file: `http://storage.googleapis.com/culper/${fileName}`})
+        })
+        router.post("/file/admin",authMiddleware,async (req,res)=>{
+           console.log(req.body)
+            
+            const fileName = `admin/${"filename"}`
+            // let bucketFile = bucket.file(fileName)
+            // bucketFile.createWriteStream({
+            //     metadata: {
+            //         contentType: 'text/plain', // Adjust content type as needed
+            //     },
+            // })
+            // console.log(fileName)
+            // const downloadFilename = `${name}.${file.type}`
+            // bucketFile.download({ destination: downloadFilename })
+   
+            res.json({file: `http://storage.googleapis.com/culper/${fileName}`})
+       
         })
         async function findValues(id,next){
             const map = await prisma.fork.findUnique({
@@ -121,13 +186,18 @@ module.exports = function(authMiddleware){
         router.get("/children/:id/user",authMiddleware, async (req, res) => {
             const {id} = req.params
             const forks = await prisma.fork.findMany({where:{
-                AND:{
+                OR:[
+                    {AND:{
                     parentId: id,                 
                     userId:req.user.id
-                }
-            }})
+                }},{
+                    AND:{
+                        parentId:id,
+                        userId:null
+                    }
+                }] }})
             res.json(forks)
-        })
+       })
       
         router.get("/protected/children/:id",authMiddleware,async (req, res) => {
 
@@ -147,6 +217,7 @@ module.exports = function(authMiddleware){
                             userId: null
                           },
                         },
+                       
                       ],
                     },
                   })

@@ -7,11 +7,18 @@ const authRoutes = require('./routes/auth.js')
 const forkRoutes = require('./routes/fork.js')
 const userRoutes = require('./routes/user.js')
 const {setUpPassportLocal}= require("./middleware/authMiddleware.js")
+const storage = require("./gstorage")
+const multer = require('multer')
+const multerGoogleCloudStorage = require("multer-cloud-storage")
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(cors())
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }))
+const upload = multer({
+    storage: multerGoogleCloudStorage.storageEngine({bucket:process.env.BUCKET_NAME,projectId:process.env.PROJECT_ID
+})
+  });;
 const logger = (req, _res, next) => {
     const time = new Date().toLocaleTimeString();
     console.log(`${time} ${req.method}: ${req.url}`);
@@ -19,6 +26,7 @@ const logger = (req, _res, next) => {
     };
 const authMiddleware = passport.authenticate('bearer', { session: false }); // Sessionless authentication
 
+app.use(upload.any())
 app.use(bodyParser.json());
 app.use(logger);
 app.get('/', (req, res, next) => {
