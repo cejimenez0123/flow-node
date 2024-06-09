@@ -7,7 +7,6 @@ const authRoutes = require('./routes/auth.js')
 const forkRoutes = require('./routes/fork.js')
 const userRoutes = require('./routes/user.js')
 const {setUpPassportLocal}= require("./middleware/authMiddleware.js")
-const storage = require("./gstorage")
 const multer = require('multer')
 const multerGoogleCloudStorage = require("multer-cloud-storage")
 
