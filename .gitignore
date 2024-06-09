@@ -27,4 +27,5 @@ amplify-gradle-config.json
 amplifytools.xcconfig
 .secret-*
 **.sample
+flow-google-key-silicon.json
 #amplify-do-not-edit-end
