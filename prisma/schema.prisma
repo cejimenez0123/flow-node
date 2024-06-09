@@ -16,6 +16,7 @@ model User {
   password String
   style Json?
   forks Fork[]
+  created DateTime @default(now())
 }
 
 model Fork {
@@ -23,6 +24,7 @@ model Fork {
     name String
     link String?
     description String?
+    priority Int
     dueDate DateTime?
     style Json?
     completed Boolean?
@@ -31,4 +33,5 @@ model Fork {
     parent Fork? @relation(name:"children",fields: [parentId], references: [id],onDelete: NoAction, onUpdate: NoAction)
     parentId String? @db.ObjectId
     forks Fork[]@relation("children")
+    created DateTime @default(now())
 }

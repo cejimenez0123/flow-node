@@ -16,7 +16,7 @@ module.exports = function(authMiddleware){
             const newFork = await prisma.fork.create({
                 data: {
                     name: task,
-                    dueDate:dueDate,
+                    dueDate:new Date(dueDate),
                     completed:truthy,
                     link:link,
                     user:{
@@ -44,7 +44,7 @@ module.exports = function(authMiddleware){
             const newFork = await prisma.fork.create({
                 data: {
                     name: task,
-                    dueDate:dueDate,
+                    dueDate:new Date(dueDate),
                     completed:truthy,
                     link:link,
                     userId:null,
