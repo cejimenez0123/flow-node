@@ -16,12 +16,6 @@ const storage = new Storage({
   }
   
 
-//   createBucket(process.env.BUCKET_NAME)
-//     .then(bucket => {
 
-//     })
-//     .catch(error => {
-     
-//     });
   
-  module.exports = createBucket;
+module.exports = createBucket
