@@ -54,6 +54,6 @@ app.use(
 app.use(passport.session());
 app.use(passport.initialize());
 app.listen(PORT, '0.0.0.0', () => {
-console.log(`Server is running on ${PORT}`)
+console.log(`Server is running`)
 })
 module.exports = app

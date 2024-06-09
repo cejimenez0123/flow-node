@@ -24,7 +24,7 @@ model Fork {
     name String
     link String?
     description String?
-    priority Int
+    priority Int?
     dueDate DateTime?
     style Json?
     completed Boolean?

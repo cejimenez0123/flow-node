@@ -6,6 +6,7 @@ const storage = new Storage({
   
   async function createBucket(bucketName) {
     try {
+        console.log(bucketName)
       const {bucket} = await storage.bucket(bucketName);
       console.log(`Bucket ${bucketName} created.`);
       return bucket; // Optionally return the bucket object for further use
