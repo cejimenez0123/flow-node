@@ -14,9 +14,12 @@ model User {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
   email String @unique
   password String
+  relationshipStatus String?
+  sedentaryLevel String?
+  age Int?
   style Json?
   forks Fork[]
-  created DateTime @default(now())
+  created DateTime? @default(now())
 }
 
 model Fork {
@@ -26,6 +29,7 @@ model Fork {
     description String?
     priority Int?
     dueDate DateTime?
+    completeDate DateTime?
     style Json?
     completed Boolean?
     userId String? @db.ObjectId
@@ -33,5 +37,5 @@ model Fork {
     parent Fork? @relation(name:"children",fields: [parentId], references: [id],onDelete: NoAction, onUpdate: NoAction)
     parentId String? @db.ObjectId
     forks Fork[]@relation("children")
-    created DateTime @default(now())
+    created DateTime? @default(now())
 }
