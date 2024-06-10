@@ -210,8 +210,8 @@ module.exports = function(authMiddleware){
         })
         router.get("/children/:id/user",authMiddleware, async (req, res) => {
             try{
-            const {id} = req.params
-            const forks = await prisma.fork.findMany({where:{
+                const {id} = req.params
+                const forks = await prisma.fork.findMany({where:{
                 OR:[
                     {AND:{
                     parentId: id,                 
@@ -222,14 +222,15 @@ module.exports = function(authMiddleware){
                         userId:null
                     }
                 }] }})
-            res.json(forks)
+                res.json(forks)
             }catch(e){
                 console.log(e)
                 res.json({message:e.message})
             }
        })
       
-        router.get("/protected/children/:id",authMiddleware,async (req, res) => {
+        router.get("/protected/children/:id",authMiddleware,async (req, res) =>
+         {
 try{
             const {id} = req.params
     
@@ -251,9 +252,14 @@ try{
                       ],
                     },
                   })
-            res.json(forks)
+                  res.json(forks)
+                }catch(e){
+                    console.log(e)
+                    res.json({message:e.message})
                 }
-        })
+         
+                
+            })
     
     return router
 }

@@ -8,6 +8,7 @@ const router = express.Router()
 
 module.exports = function(authMiddleware){
 router.get("/",async (req, res)=>{
+  try{
   const token = req.headers.authorization.split(" ")[1]
   jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
     if (err) {
@@ -19,6 +20,9 @@ router.get("/",async (req, res)=>{
         message: 'Token Acitive'})
     }
   })
+}catch(e){
+  res.json({message:e.message})
+}
 })
 router.get("/user",authMiddleware,async (req, res) => {
   res.json({user:req.user})
@@ -60,8 +64,9 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
   
     try {
+      
       // Find user by username
-      const user = await prisma.user.findUnique({ where: { email } });
+      const user = await prisma.user.findUnique({ where: { email:email.toLowerCase() } });
   
       if (!user || !bcrypt.compareSync(password, user.password)) {
         return res.status(401).json({ message: 'Invalid email or password' });
@@ -72,7 +77,7 @@ router.post('/login', async (req, res) => {
   
       res.json({ token });
     } catch (error) {
-      res.status(500).json({ message: 'Error logging in' });
+      res.status(402).json({ message: 'Error logging in' });
     }
   });
 
