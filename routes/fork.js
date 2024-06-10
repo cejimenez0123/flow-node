@@ -5,6 +5,8 @@ const router = express.Router()
 
 module.exports = function(authMiddleware){
     router.post("/",authMiddleware, async (req,res)=>{
+
+        try{
             const {parentFork,task,completed,dueDate,link}=req.body
             let truthy = null
             if(dueDate!==null){
@@ -31,8 +33,14 @@ module.exports = function(authMiddleware){
                     }
                 }})
                 res.json(newFork)
+        }catch(e){
+                console.log(e)
+                res.json({message:e.message})
+        }
+                
         })
         router.post("/admin",authMiddleware, async (req,res)=>{
+            try{
             const {parentFork,task,completed,dueDate,link}=req.body
             let truthy = null
             if(dueDate!==null){
@@ -55,16 +63,26 @@ module.exports = function(authMiddleware){
                     }
                 }})
                 res.json(newFork)
+            }catch(e){
+                console.log(e)
+                res.json({message:e.message})
+            }
         })
         router.delete("/children/:id",authMiddleware,async (req,res)=>{
+            try{
             await prisma.fork.delete({
                 where: {
                     id: req.params.id
                 },
               })
             res.status(201).json({message:"Deleted Successfully"})
+            }catch(e){
+                console.log(e)
+                res.json({message:e.message})
+            }
         })
         router.put("/:id" ,authMiddleware,async (req,res)=>{
+            try{
             const id = req.params.id
             const { completed,
                     dueDate,
@@ -79,13 +97,16 @@ module.exports = function(authMiddleware){
                 data: {
                     name: name,
                     completed: completed,
-                    dueDate: dueDate,
+                    dueDate: new Date(dueDate),
                     style:style, 
                     description: description??""
                 },
               })
 
             res.json(updateFork)
+            }catch(e){
+                res.json({message:e.message})
+            }
         })
         router.get("/",async (req,res)=>{
             const fork = await prisma.fork.findUnique({where:
@@ -93,6 +114,7 @@ module.exports = function(authMiddleware){
             res.json(fork)
         })
         router.get("/children/:id", async (req,res)=>{
+            try{
             const {id} = req.params
             const forks = await prisma.fork.findMany({where:{
                 OR:[{
@@ -104,13 +126,12 @@ module.exports = function(authMiddleware){
                 }
 
                 ]
-                // AND:{
-                //                 
-                // }
+            
         }})
-
-         
             res.json(forks)
+    }catch(e){
+        res.json({message:e.message})
+    }
         })
         router.post("/file",authMiddleware,async (req,res)=>{
             const {name,file}=req.body

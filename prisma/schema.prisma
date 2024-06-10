@@ -12,13 +12,19 @@ datasource db {
 
 model User {
   id    String @id @default(auto()) @map("_id") @db.ObjectId
+  firstName String?
+  lastName String?
   email String @unique
   password String
-  relationshipStatus String?
-  sedentaryLevel String?
+  relationshipStatus RelationshipStatus? @default(single)
+  sedentaryLevel Int?
+  education Education? @default(working)
   age Int?
+  managedGroups Group[]
   style Json?
   forks Fork[]
+  groups UserGroup[]
+  equipment UserEquipment[]
   created DateTime? @default(now())
 }
 
@@ -31,6 +37,10 @@ model Fork {
     dueDate DateTime?
     completeDate DateTime?
     style Json?
+    place Place? @default(home)
+    suggested Suggest? @default(no)
+    level Boolean?
+    work Boolean?
     completed Boolean?
     userId String? @db.ObjectId
     user User? @relation(fields: [userId], references: [id])
@@ -38,4 +48,72 @@ model Fork {
     parentId String? @db.ObjectId
     forks Fork[]@relation("children")
     created DateTime? @default(now())
+}
+
+model Location {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  latitude  Float
+  longitude Float
+  timestamp DateTime? @default(now())
+  additionalProperties Json?
+}
+model UserEquipment {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  userId String? @db.ObjectId
+  user User? @relation(fields: [userId], references: [id])
+  equipmentId String? @db.ObjectId
+  equipment Equipment? @relation(fields: [equipmentId], references: [id])
+}
+model UserGroup{
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    userId String? @db.ObjectId
+    user User? @relation(fields: [userId], references: [id])
+    groupId String? @db.ObjectId
+    group Group? @relation(fields: [groupId], references: [id])
+    status Request? @default(requested)
+    created DateTime? @default(now())
+}
+model Group{
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+    userId String? @db.ObjectId
+    user User? @relation(fields: [userId], references: [id])
+    users UserGroup[]
+    created DateTime? @default(now())
+}
+model Equipment {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  place Place? @default(home)
+  suggested Suggest? @default(no)
+  users UserEquipment[]
+  created DateTime? @default(now())
+}
+enum RelationshipStatus {
+  single
+  divorced
+  relationship
+  situation
+  widowed
+}
+enum Request {
+  accepted
+  requested
+}
+enum Suggest {
+  no
+  suggested
+  approved
+}
+enum Place {
+  away
+  home
+  work
+}
+enum Education {
+  working
+  student
+  selfemployed
+  unemployed
+  retired
+  parttime
 }
