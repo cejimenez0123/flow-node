@@ -190,6 +190,7 @@ module.exports = function(authMiddleware){
             }
         }
         router.delete("/:id",authMiddleware,async (req,res)=>{
+         try{
             const parentId = req.params.id
             const idList = req.body.idList
            await findValues(parentId,(id)=>{
@@ -202,9 +203,13 @@ module.exports = function(authMiddleware){
                })
            })
         
-           
+        }catch(e){
+            console.log(e)
+            res.json({message:e.message})
+        } 
         })
         router.get("/children/:id/user",authMiddleware, async (req, res) => {
+            try{
             const {id} = req.params
             const forks = await prisma.fork.findMany({where:{
                 OR:[
@@ -218,10 +223,14 @@ module.exports = function(authMiddleware){
                     }
                 }] }})
             res.json(forks)
+            }catch(e){
+                console.log(e)
+                res.json({message:e.message})
+            }
        })
       
         router.get("/protected/children/:id",authMiddleware,async (req, res) => {
-
+try{
             const {id} = req.params
     
                 const forks = await prisma.fork.findMany({
@@ -243,7 +252,7 @@ module.exports = function(authMiddleware){
                     },
                   })
             res.json(forks)
-
+                }
         })
     
     return router
