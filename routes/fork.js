@@ -7,7 +7,7 @@ module.exports = function(authMiddleware){
     router.post("/",authMiddleware, async (req,res)=>{
 
         try{
-            const {parentFork,task,completed,dueDate,link}=req.body
+            const {parentFork,task,description, completed,dueDate,link}=req.body
             let truthy = null
             if(dueDate!==null){
                 truthy=false
@@ -19,6 +19,7 @@ module.exports = function(authMiddleware){
                 data: {
                     name: task,
                     dueDate:new Date(dueDate),
+                    description:description,
                     completed:truthy,
                     link:link,
                     user:{
@@ -41,7 +42,7 @@ module.exports = function(authMiddleware){
         })
         router.post("/admin",authMiddleware, async (req,res)=>{
             try{
-            const {parentFork,task,completed,dueDate,link}=req.body
+            const {parentFork,task,description,completed,dueDate,link}=req.body
             let truthy = null
             if(dueDate!==null){
                 truthy=false
@@ -53,6 +54,7 @@ module.exports = function(authMiddleware){
                 data: {
                     name: task,
                     dueDate:new Date(dueDate),
+                    description:description,
                     completed:truthy,
                     link:link,
                     userId:null,
@@ -87,6 +89,7 @@ module.exports = function(authMiddleware){
             const { completed,
                     dueDate,
                     name,
+                    link,
                     style,
                     description }= req.body
             const updateFork = await prisma.fork.update({
@@ -97,6 +100,7 @@ module.exports = function(authMiddleware){
                 data: {
                     name: name,
                     completed: completed,
+                    link:link??"",
                     dueDate: new Date(dueDate),
                     style:style, 
                     description: description??""

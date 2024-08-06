@@ -6,10 +6,6 @@ const twilioClient = require("twilio")
 
 
 // module.exports = function(authMiddleware){
-
-
-
-
 // function sendMorningNotification(toNumber, message) {
 //   twilioClient.messages
 //     .create({

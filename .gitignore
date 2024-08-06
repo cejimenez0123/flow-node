@@ -5,8 +5,8 @@ node_modules
 # Local Netlify folder
 .netlify
 app.yaml
-
-
+routes/sms.js
+twilio/
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*
