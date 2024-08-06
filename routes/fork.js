@@ -134,7 +134,6 @@ module.exports = function(authMiddleware){
         })
         //donothing
         if(forknot){
-            
             changableForks = changableForks.map(fork=>{
                 if(fork.id=="665e0d8070865932963089d8"){
                     forknot.link =  vimeo[Math.floor(Math.random()*vimeo.length)];
@@ -145,7 +144,6 @@ module.exports = function(authMiddleware){
 
             })
     
-         
         }
             res.json(changableForks)
     }catch(e){
