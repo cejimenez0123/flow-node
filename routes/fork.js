@@ -2,7 +2,7 @@ const express = require('express');
 const prisma = require("../db");
 const bucket = require("../gstorage")
 const router = express.Router()
-
+const vimeo = require("../public/vimeo")
 module.exports = function(authMiddleware){
     router.post("/",authMiddleware, async (req,res)=>{
 
@@ -120,7 +120,7 @@ module.exports = function(authMiddleware){
                 OR:[{
                     AND:{
                         parentId: id, 
-                            userId:null   
+                        userId:null   
                     }
 
                 }
@@ -128,7 +128,26 @@ module.exports = function(authMiddleware){
                 ]
             
         }})
-            res.json(forks)
+        let changableForks = forks
+        let forknot= changableForks.find(fork=>{
+            return fork.id=="665e0d8070865932963089d8"
+        })
+        //donothing
+        if(forknot){
+            
+            changableForks = changableForks.map(fork=>{
+                if(fork.id=="665e0d8070865932963089d8"){
+                    forknot.link =  vimeo[Math.floor(Math.random()*vimeo.length)];
+                    return forknot
+                }else{
+                    return fork
+                }
+
+            })
+    
+         
+        }
+            res.json(changableForks)
     }catch(e){
         res.json({message:e.message})
     }
@@ -143,14 +162,14 @@ module.exports = function(authMiddleware){
                     contentType: 'text/plain', // Adjust content type as needed
                 },
             })
-            console.log(fileName)
+
             const downloadFilename = `${name}.${file.type}`
             bucketFile.download({ destination: downloadFilename })
    
             res.json({file: `http://storage.googleapis.com/culper/${fileName}`})
         })
         router.post("/file/admin",authMiddleware,async (req,res)=>{
-           console.log(req.body)
+
             
             const fileName = `admin/${"filename"}`
             // let bucketFile = bucket.file(fileName)
