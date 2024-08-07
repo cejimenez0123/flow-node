@@ -7,6 +7,7 @@ node_modules
 app.yaml
 routes/sms.js
 twilio/
+package-lock.json
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*
